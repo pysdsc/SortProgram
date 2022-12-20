@@ -4,24 +4,34 @@ import java.util.Scanner;
 
 public class SortingProgramMenu {
 
-    int SelectedMenu;
-    int SelectedSortAlgorithm;
-    int SelectedSortOrder;
-    int NumberOfNumbersToBeSort;
-    int[] NumbersToBeSorted;
-    int[] SortedNumbers;
+    private int SelectedMenu;
+    private int SelectedSortAlgorithm;
+    private int SelectedSortOrder;
+    private int NumberOfNumbersToBeSort;
+    private int[] NumbersToBeSorted;
+    private int[] SortedNumbers;
+    private int NumberOfWordsToBeSort;
+    private String[] WordsToBeSorted;
+    private String[] SortedWords;
 
     Scanner scanner = new Scanner(System.in);
-
+   
     public void start() {
         while (true) {
             printStudentIDAndName();
             selectMenu();
             selectSortAlgorithm();
             selectSortOrder();
-            enterNumberOfNumbersToBeSort();
-            enterNumbersToBeSorted();
-            sortNumbers();
+            if (SelectedMenu == 1) {
+                enterNumberOfNumbersToBeSort();
+                enterNumbersToBeSorted();
+                sortNumbers();
+            }
+            if (SelectedMenu == 2) {
+                enterNumberOfWordsToBeSort();
+                enterWordsToBeSorted();
+                sortWords();
+            }
             sortInOrder();
             printResults();
         }
@@ -33,9 +43,9 @@ public class SortingProgramMenu {
     }
 
     private void selectMenu() {
-        System.out.print("1. Sort numbers\n" + "2. Quit\n" + "> ");
+        System.out.print("1. Sort numbers\n" + "2. Sort Words\n" +"3. Quit\n" + "> ");
         SelectedMenu = scanner.nextInt();
-        if (SelectedMenu == 2)
+        if (SelectedMenu == 3)
             System.exit(0);
     }
 
@@ -58,7 +68,7 @@ public class SortingProgramMenu {
         NumberOfNumbersToBeSort = scanner.nextInt();
         NumbersToBeSorted = new int[NumberOfNumbersToBeSort];
     }
-
+    
     private void enterNumbersToBeSorted() {
         System.out.print("The numbers to be sorted\n" + "> ");
         for (int i = 0 ; i < NumberOfNumbersToBeSort ; i++) {
@@ -68,22 +78,58 @@ public class SortingProgramMenu {
 
     private void sortNumbers() {
         if (SelectedSortAlgorithm == 1)
-            BubbleSort.sort(NumbersToBeSorted);
+            BubbleSort.sortNumbers(NumbersToBeSorted);
         else
-            MergeSort.sort(NumbersToBeSorted);
+            MergeSort.sortNumbers(NumbersToBeSorted);
         SortedNumbers = NumbersToBeSorted;
+    }
+
+    private void enterNumberOfWordsToBeSort() {
+        System.out.print("The number of words to be sorted\n" + "> ");
+        NumberOfWordsToBeSort = scanner.nextInt();
+        WordsToBeSorted = new String[NumberOfWordsToBeSort];
+    }
+
+    private void enterWordsToBeSorted() {
+        System.out.print("The words to be sorted\n" + "> ");
+        for (int i = 0; i < NumberOfWordsToBeSort ; i++) {
+            WordsToBeSorted[i] = scanner.next();
+        }
+    }
+
+    private void sortWords() {
+        if (SelectedSortAlgorithm == 1)
+            BubbleSort.sortWords(WordsToBeSorted);
+        else
+            MergeSort.sortWords(WordsToBeSorted);
+        SortedWords = WordsToBeSorted;
     }
 
     private void sortInOrder() {
         if (SelectedSortOrder == 2)
-            descend(SortedNumbers);
+            if (SelectedMenu == 1)
+                descendNumbers(SortedNumbers);
+            else
+                descendWords(SortedWords);
     }
 
-    private void descend(int arr[]) {
-        for(int i=0; i < arr.length; i++) {
+    protected void descendNumbers(int arr[]) {
+        for(int i = 0; i < arr.length; i++) {
             for(int j = i + 1; j < arr.length; j++) {
-                if(arr[i] < arr[j]) {
+                if (arr[i] < arr[j]) {
                     int temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+    }
+
+    protected void descendWords(String arr[]) {
+        for(int i = 0; i < arr.length; i++) {
+            for(int j = i + 1; j < arr.length; j++) {
+                if (arr[i].compareTo(arr[j]) < 0) {
+                    String temp = arr[i];
                     arr[i] = arr[j];
                     arr[j] = temp;
                 }
@@ -93,8 +139,14 @@ public class SortingProgramMenu {
 
     private void printResults() {
         System.out.println("<Results>");
-        for(int i : SortedNumbers) {
-            System.out.print(i + " ");
+        if (SelectedMenu == 1) {
+            for(int i : SortedNumbers)
+                System.out.print(i + " ");
+        }
+        else {
+            for (int i = 0; i < SortedWords.length; i++) {
+                System.out.print(SortedWords[i] + " ");
+            }
         }
         System.out.println("\n");
     }
